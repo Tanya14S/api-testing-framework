@@ -1,0 +1,399 @@
+{
+  "info": {
+    "_postman_id": "e5d5090f-7790-4ba7-9dbc-a3f91ddce24c",
+    "name": "API_Testing_Framework",
+    "description": "End-to-end API testing framework for CRM application including authentication, CRUD operations, validations, and data-driven testing.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "53748657",
+    "_collection_link": "https://go.postman.co/collection/53748657-e5d5090f-7790-4ba7-9dbc-a3f91ddce24c?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "CRM",
+      "item": [
+        {
+          "name": "Auth",
+          "item": [
+            {
+              "name": "Login API",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "let jsonData = pm.response.json();",
+                      "",
+                      "if (pm.iterationData.get(\"email\") === \"eve.holt@reqres.in\") {",
+                      "",
+                      "    pm.test(\"Valid login should return 200\", function () {",
+                      "        pm.response.to.have.status(200);",
+                      "    });",
+                      "",
+                      "    pm.test(\"Token should exist\", function () {",
+                      "        pm.expect(jsonData.token).to.not.be.undefined;",
+                      "    });",
+                      "",
+                      "} else {",
+                      "",
+                      "    pm.test(\"Invalid login should return 400\", function () {",
+                      "        pm.response.to.have.status(400);",
+                      "    });",
+                      "",
+                      "    pm.test(\"Error message present\", function () {",
+                      "        pm.expect(jsonData.error).to.not.be.undefined;",
+                      "    });",
+                      "}"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                },
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "packages": {},
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "x-api-key",
+                    "value": "{{apiKey}}",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseURL_crm}}/login",
+                  "host": [
+                    "{{baseURL_crm}}"
+                  ],
+                  "path": [
+                    "login"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Users",
+          "item": [
+            {
+              "name": "Get Users",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test(\"Schema is valid\", function () {",
+                      "",
+                      "    let schema = {",
+                      "        \"type\": \"object\",",
+                      "        \"required\": [\"data\"],",
+                      "        \"properties\": {",
+                      "            \"data\": {",
+                      "                \"type\": \"object\",",
+                      "                \"required\": [\"id\", \"email\"],",
+                      "                \"properties\": {",
+                      "                    \"id\": { \"type\": \"number\" },",
+                      "                    \"email\": { \"type\": \"string\" }",
+                      "                }",
+                      "            }",
+                      "        }",
+                      "    };",
+                      "",
+                      "    pm.response.to.have.jsonSchema(schema);",
+                      "});"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "x-api-key",
+                    "value": "{{apiKey}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseURL_crm}}/users/{{userId}}",
+                  "host": [
+                    "{{baseURL_crm}}"
+                  ],
+                  "path": [
+                    "users",
+                    "{{userId}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Create User",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "let jsonData = pm.response.json();",
+                      "",
+                      "// Status check",
+                      "pm.test(\"Status is 201\", function () {",
+                      "    pm.response.to.have.status(201);",
+                      "});",
+                      "",
+                      "// Response time check",
+                      "pm.test(\"Response time < 3000ms\", function () {",
+                      "    pm.expect(pm.response.responseTime).to.be.below(3000);",
+                      "});",
+                      "",
+                      "// Content-Type check",
+                      "pm.test(\"Content-Type is JSON\", function () {",
+                      "    pm.response.to.have.header(\"Content-Type\");",
+                      "});",
+                      "",
+                      "// ID generated",
+                      "pm.test(\"ID is generated\", function () {",
+                      "    pm.expect(jsonData.id).to.not.be.undefined;",
+                      "});",
+                      "",
+                      "// createdAt exists",
+                      "pm.test(\"createdAt exists\", function () {",
+                      "    pm.expect(jsonData.createdAt).to.not.be.undefined;",
+                      "});",
+                      "",
+                      "// Request data validation (important)",
+                      "let requestData = JSON.parse(pm.request.body.raw);",
+                      "",
+                      "pm.test(\"Request name is correct\", function () {",
+                      "    pm.expect(requestData.name).to.eql(\"Test User\");",
+                      "});"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                },
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "exec": [
+                      "// Generate random email",
+                      "let randomEmail = `test_${Math.floor(Math.random() * 10000)}@mail.com`;",
+                      "",
+                      "// Store in environment",
+                      "pm.environment.set(\"randomEmail\", randomEmail);",
+                      "",
+                      "// Update request body dynamically",
+                      "let body = {",
+                      "    name: \"Test User\",",
+                      "    email: randomEmail,",
+                      "    job: \"QA Engineer\"",
+                      "};",
+                      "",
+                      "pm.request.body.update(JSON.stringify(body));"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "x-api-key",
+                    "value": "{{apiKey}}",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Tanya\",\n  \"job\": \"QA Engineer\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseURL_crm}}/users",
+                  "host": [
+                    "{{baseURL_crm}}"
+                  ],
+                  "path": [
+                    "users"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Update User",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "// Status check",
+                      "pm.test(\"Status is 200\", function () {",
+                      "    pm.response.to.have.status(200);",
+                      "});",
+                      "",
+                      "// Validate updated data",
+                      "let jsonData = pm.response.json();",
+                      "",
+                      "pm.test(\"User updated successfully\", function () {",
+                      "    pm.expect(jsonData.name).to.eql(\"Tanya Updated\");",
+                      "});",
+                      "",
+                      "// Check updatedAt exists",
+                      "pm.test(\"updatedAt present\", function () {",
+                      "    pm.expect(jsonData.updatedAt).to.not.be.undefined;",
+                      "});"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "x-api-key",
+                    "value": "{{apiKey}}",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Tanya Updated\",\n  \"job\": \"Senior QA Engineer\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseURL_crm}}/users/{{userId}}",
+                  "host": [
+                    "{{baseURL_crm}}"
+                  ],
+                  "path": [
+                    "users",
+                    "{{userId}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Delete User",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "// Status check",
+                      "pm.test(\"Status is 204\", function () {",
+                      "    pm.response.to.have.status(204);",
+                      "});",
+                      "",
+                      "// Response body should be empty",
+                      "pm.test(\"Response body is empty\", function () {",
+                      "    pm.expect(pm.response.text()).to.eql(\"\");",
+                      "});"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "x-api-key",
+                    "value": "{{apiKey}}",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": ""
+                },
+                "url": {
+                  "raw": "{{baseURL_crm}}/users/{{userId}}",
+                  "host": [
+                    "{{baseURL_crm}}"
+                  ],
+                  "path": [
+                    "users",
+                    "{{userId}}"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          "// Get token from environment",
+          "let token = pm.environment.get(\"authToken\");",
+          "",
+          "// If token exists, add Authorization header",
+          "if (token) {",
+          "    pm.request.headers.add({",
+          "        key: \"Authorization\",",
+          "        value: \"Bearer \" + token",
+          "    });",
+          "}"
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ]
+}

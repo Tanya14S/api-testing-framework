@@ -1,0 +1,72 @@
+{
+	"id": "d1bd1547-906f-4be7-bddb-558fb109f1f0",
+	"name": "API_Testing_Framework",
+	"timestamp": "2026-04-05T09:05:21.378Z",
+	"collection_id": "53748657-e5d5090f-7790-4ba7-9dbc-a3f91ddce24c",
+	"folder_id": 0,
+	"environment_id": "53748657-d1ef7c58-0213-4160-9505-fe7faaf68243",
+	"totalPass": 4,
+	"delay": 0,
+	"persist": true,
+	"status": "finished",
+	"startedAt": "2026-04-05T09:05:20.262Z",
+	"totalFail": 0,
+	"results": [
+		{
+			"id": "3242d886-66f0-40e3-801f-c9b1e1d355d5",
+			"name": "Login API",
+			"url": "https://reqres.in/api/login",
+			"time": 333,
+			"responseCode": {
+				"code": 400,
+				"name": "Bad Request"
+			},
+			"tests": {
+				"Invalid login should return 400": true,
+				"Error message present": true
+			},
+			"testPassFailCounts": {
+				"Valid login should return 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Token should exist": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Invalid login should return 400": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Error message present": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				355,
+				333
+			],
+			"allTests": [
+				{
+					"Valid login should return 200": true,
+					"Token should exist": true
+				},
+				{
+					"Invalid login should return 400": true,
+					"Error message present": true
+				}
+			]
+		}
+	],
+	"count": 2,
+	"totalTime": 688,
+	"collection": {
+		"requests": [
+			{
+				"id": "3242d886-66f0-40e3-801f-c9b1e1d355d5",
+				"method": "POST"
+			}
+		]
+	}
+}
