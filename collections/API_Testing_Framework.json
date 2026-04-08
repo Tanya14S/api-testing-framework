@@ -32,6 +32,7 @@
                       "    pm.test(\"Token should exist\", function () {",
                       "        pm.expect(jsonData.token).to.not.be.undefined;",
                       "    });",
+                      "     pm.environment.set("authToken", jsonData.token);",
                       "",
                       "} else {",
                       "",
